@@ -68,9 +68,14 @@ class MeteorMove extends SolidMove {
           if (choice === 0) {
             grid.swap(y * grid.col + x, ny * grid.col + nx);
           } else if (choice === 1) {
-            grid.swap(y * grid.col + x, ny * grid.col + nx - 1);
+            // Only allow a diagonal move if the cell below is blocked and diagonal is open
+            if (moves[0] === 0) {
+              grid.swap(y * grid.col + x, ny * grid.col + nx - 1);
+            }
           } else if (choice === 2) {
-            grid.swap(y * grid.col + x, ny * grid.col + nx + 1);
+            if (moves[0] === 0) {
+              grid.swap(y * grid.col + x, ny * grid.col + nx + 1);
+            }
           }
           moved = true;
           // leave smoke trail occasionally
