@@ -47,6 +47,10 @@ class Ice extends Solid {
         const n = grid.get(ni);
         if (n instanceof Water && Math.random() < 0.02) {
           grid.setElement(nx, ny, new Ice(ni));
+          const replaced = grid.get(ni) as Ice;
+          // set per-instance color and force redraw this frame
+          replaced.color = randomColor(Ice.currentColor);
+          grid.highlightIndex.add(ni);
         }
       }
     }
