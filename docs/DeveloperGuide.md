@@ -32,7 +32,7 @@
 
 #### Create a new behaviour
 
-1) Add a file under `src/modules/behaviours/`, export a class extending `Behaviour` or an existing subclass (e.g., `Movement`, `Life`).
+1. Add a file under `src/modules/behaviours/`, export a class extending `Behaviour` or an existing subclass (e.g., `Movement`, `Life`).
 
 ```ts
 // src/modules/behaviours/Repel.ts
@@ -42,13 +42,17 @@ import Element from "../elements/element.js";
 
 class Repel extends Behaviour {
   radius: number;
-  constructor(radius = 1) { super(); this.radius = radius; }
+  constructor(radius = 1) {
+    super();
+    this.radius = radius;
+  }
   update(grid: Grid, element: Element) {
     const x = element.index % grid.row;
     const y = Math.floor(element.index / grid.col);
     for (let dx = -this.radius; dx <= this.radius; dx++)
       for (let dy = -this.radius; dy <= this.radius; dy++) {
-        const nx = x + dx, ny = y + dy;
+        const nx = x + dx,
+          ny = y + dy;
         if (!grid.isValidIndex(nx, ny)) continue;
         // Custom logic here (e.g., push liquids away)
       }
@@ -57,11 +61,11 @@ class Repel extends Behaviour {
 export default Repel;
 ```
 
-2) Attach the behaviour to an element (see below) via its constructor.
+2. Attach the behaviour to an element (see below) via its constructor.
 
 #### Create a new material/element
 
-1) Create a class under `src/modules/elements/` (choose `solids/`, `liquids/`, or `misc/`) that extends `Solid`, `Liquid`, `Gas`, or `Element`.
+1. Create a class under `src/modules/elements/` (choose `solids/`, `liquids/`, or `misc/`) that extends `Solid`, `Liquid`, `Gas`, or `Element`.
 
 ```ts
 // src/modules/elements/solids/rubber.ts
@@ -84,18 +88,19 @@ class Rubber extends Solid {
 export default Rubber;
 ```
 
-2) Export it from `src/modules/elements/ElementIndex.ts`.
+2. Export it from `src/modules/elements/ElementIndex.ts`.
 
 ```ts
 export { default as Rubber } from "./solids/rubber.js";
 ```
 
-3) Register the material in `src/engine/materials.ts`:
+3. Register the material in `src/engine/materials.ts`:
+
 - Add to `MaterialId` union
 - Add entry to `MATERIALS` with tags
 - Map the material id to the element class in `materialToElementCtor`
 
-4) Add a button in `src/index.html` and wire it in `src/modules/controls.ts`:
+4. Add a button in `src/index.html` and wire it in `src/modules/controls.ts`:
 
 ```html
 <button id="rubber">Rubber</button>
@@ -106,9 +111,9 @@ import { Rubber } from "./elements/ElementIndex.js";
 const controls = { /* ... */ rubber: () => new Rubber(0) };
 ```
 
-5) Ensure `Grid.setElement(...)` has a case for your class (like the others) to create a new instance when painting.
+5. Ensure `Grid.setElement(...)` has a case for your class (like the others) to create a new instance when painting.
 
-6) (Optional) Allow in TIL by ensuring the material id exists in `MATERIALS` so `validateTIL` accepts it.
+6. (Optional) Allow in TIL by ensuring the material id exists in `MATERIALS` so `validateTIL` accepts it.
 
 #### GPT-5 compile server
 
@@ -117,6 +122,7 @@ const controls = { /* ... */ rubber: () => new Rubber(0) };
 - The PromptBar calls this endpoint to compile NL → TIL using a CFG-constrained custom tool (`compile_til`).
 
 Run server:
+
 ```
 npx tsc -p .
 node dist/server/index.js

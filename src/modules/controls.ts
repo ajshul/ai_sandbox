@@ -27,6 +27,46 @@ let currentElement: Solid | Liquid | Gas | Element = new Sand(0);
 let mouseX: number;
 let mouseY: number;
 
+function placeBombShape(cx: number, cy: number) {
+  const radius = 3;
+  // body (circle)
+  for (let dy = -radius; dy <= radius; dy++) {
+    for (let dx = -radius; dx <= radius; dx++) {
+      if (dx * dx + dy * dy <= radius * radius) {
+        const x = cx + dx;
+        const y = cy + dy;
+        if (x >= 0 && x < col && y >= 0 && y < row) {
+          grid.setElement(x, y, new Bomb(y * col + x));
+        }
+      }
+    }
+  }
+  // fuse upwards
+  const fuseLen = 3;
+  for (let k = 1; k <= fuseLen; k++) {
+    const fx = cx;
+    const fy = cy - radius - k;
+    if (fx >= 0 && fx < col && fy >= 0 && fy < row) {
+      grid.setElement(fx, fy, new Fire(fy * col + fx));
+    }
+  }
+}
+
+function placeMeteorShape(cx: number, cy: number) {
+  const radius = 4;
+  for (let dy = -radius; dy <= radius; dy++) {
+    for (let dx = -radius; dx <= radius; dx++) {
+      if (dx * dx + dy * dy <= radius * radius) {
+        const x = cx + dx;
+        const y = cy + dy;
+        if (x >= 0 && x < col && y >= 0 && y < row) {
+          grid.setElement(x, y, new Meteor(y * col + x));
+        }
+      }
+    }
+  }
+}
+
 export function setupControls() {
   let canvas = document.getElementById("canvas") as HTMLCanvasElement;
 
@@ -50,15 +90,11 @@ export function setupControls() {
     let j = Math.floor(mouseY / gridWidth);
     if (i >= 0 && i < col && j >= 0 && j < row) {
       if (id === "bomb") {
-        const inst = new Bomb(j * col + i);
-        grid.setIndex(j * col + i, inst);
-        grid.setElement(i, j, inst);
+        placeBombShape(i, j);
         return;
       }
       if (id === "meteor") {
-        const inst = new Meteor(j * col + i);
-        grid.setIndex(j * col + i, inst);
-        grid.setElement(i, j, inst);
+        placeMeteorShape(i, j);
         return;
       }
     }
