@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+
+# Ignore AI docs and Cursor guide (renamed guide.md)
+ai_docs/
+guide.md
+Cursor_Guide.md
+

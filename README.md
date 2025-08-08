@@ -44,6 +44,7 @@
 <br>
 
 ### Created In:
+
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white) ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
 
 </br></br>
@@ -54,13 +55,37 @@
   You can access the demo from my <a href="https://quaidsage.com/falling-sand" target="_blank"><strong>website »</strong></a>. 
 </p>
 
-  * Left Click and drag across the left-hand game window to add elements to the grid.
-  * Change elements from the right-hand button menu.
-    * Access tools such as Increase Brush Size or Fill in the same menu.
-  * Edit Element Behaviours such as Burn Rate and Acceleration in the Edit Settings window.
-  * Select different Views or alter Render Delay to observe element behaviour in the bottom-right menu.
+- Left Click and drag across the left-hand game window to add elements to the grid.
+- Change elements from the right-hand button menu.
+  - Access tools such as Increase Brush Size or Fill in the same menu.
+- Edit Element Behaviours such as Burn Rate and Acceleration in the Edit Settings window.
+- Select different Views or alter Render Delay to observe element behaviour in the bottom-right menu.
+
+## Run locally
+
+Build TypeScript to `dist/` and serve the repo root:
+
+```sh
+npx tsc -p .
+python3 -m http.server 5173
+# then open http://127.0.0.1:5173/src/index.html
+```
+
+## How the new TIL flow works
+
+- Paste a TIL snippet in the bottom prompt bar (or click “Sample”), Compile, view the ghost overlay, and Confirm to place.
+- TIL parser & validator live under `src/dsl/`.
+- Grid patches are produced and applied via `src/engine/` helpers.
+
+## Documentation
+
+- `docs/Architecture.md`: high-level system overview.
+- `docs/TIL.md`: TIL subset and examples.
+- `docs/AI_Integration.md`: plan for GPT-5 tool calling.
+- `docs/DeveloperGuide.md`: setup, run, and code tour.
 
 ## Roadmap
+
 - [ ] Support further fire interactions.
 - [ ] Mobile support.
 - [ ] Ability to adjust movement and types of elements.
@@ -68,8 +93,7 @@
 - [ ] Option to adjust grid row and column ratio.
 - [ ] Optimisation to liquid and gas dispersion.
 
-## Acknowledgements 
+## Acknowledgements
 
-  * <a href="https://store.steampowered.com/app/881100/Noita/">Noita</a>: Original inspiration for the project.
-  * <a href="https://jason.today/">jason.today</a>: Concept for behavioural system.
-
+- <a href="https://store.steampowered.com/app/881100/Noita/">Noita</a>: Original inspiration for the project.
+- <a href="https://jason.today/">jason.today</a>: Concept for behavioural system.

@@ -1,0 +1,27 @@
+// Minimal subset grammar for TIL v1 used for local parsing
+
+PROGRAM      := (DECLARATION ";")+
+DECLARATION  := PREFAB
+
+PREFAB       := "prefab" ID "{" P_BODY "}"
+P_BODY       := (PROP | FOOTPRINT )*
+
+PROP         := "prop" ID ":" VALUE
+VALUE        := NUMBER | STRING | LIST
+LIST         := "[" (STRING ("," STRING)*)? "]"
+
+FOOTPRINT    := "footprint" "{" STENCILS "}"
+STENCILS     := STENCIL+
+STENCIL      := RECT | CIRCLE | LINE
+
+RECT         := "rect" "(" x "," y "," w "," h "," MAT ("," COLOR)? ")"
+CIRCLE       := "circle" "(" x "," y "," r "," MAT ("," COLOR)? ")"
+LINE         := "line" "(" x "," y "," x "," y "," MAT ("," COLOR)? ")"
+
+ID           := /[A-Za-z_][A-Za-z0-9_]*/
+NUMBER       := /-?[0-9]+/
+STRING       := /"[^"]*"/
+MAT          := ID
+COLOR        := /#[0-9A-Fa-f]{6}/
+
+
