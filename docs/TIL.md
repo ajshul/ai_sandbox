@@ -8,7 +8,11 @@ See `src/dsl/til.grammar.ebnf`. Supported constructs:
 
 - Prefab
   - `prefab NAME { P_BODY } ;`
-  - Body may include `prop` entries (number/string/string-list) and a single `footprint { ... }` block
+  - Body may include:
+    - `prop` entries (number/string/string-list)
+    - `tags: ["..."]`
+    - a single `footprint { ... }` block
+    - `verb name { setRect(x,y,w,h,MAT,#RRGGBB?); ... }` (simple action demo)
 - Stencils inside `footprint {}`
   - `rect(x,y,w,h,MAT, #RRGGBB?)`
   - `circle(x,y,r,MAT, #RRGGBB?)`
@@ -18,7 +22,7 @@ Unknown tokens or unsupported constructs cause validation errors.
 
 #### Materials
 
-Materials must be known in `src/engine/materials.ts`. Currently: AIR, WOOD, WATER, STEEL, SAND, STONE, SMOKE, FIRE, ACID, OIL, FOAM.
+Materials must be known in `src/engine/materials.ts`. Currently: AIR, WOOD, WATER, STEEL, SAND, STONE, SMOKE, FIRE, ACID, OIL, FOAM, ICE, BOMB, METEOR (plus mapped RUBBER/BRICK/RUBBLE).
 
 #### Validation
 
@@ -39,6 +43,7 @@ prefab TestBlock {
   }
 };
 ```
+
 #### Material examples
 
 ```

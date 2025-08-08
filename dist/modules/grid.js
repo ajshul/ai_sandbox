@@ -1,7 +1,7 @@
 import { drawPixel, gridWidth, col, row, ctx, updateOnNextFrame, } from "./renderer.js";
 import { currentElement, brushSize, mouseX, mouseY } from "./controls.js";
 import { ALLOW_REPLACEMENT, isPaused, DEBUG_LIFE, DEBUG_MOVEMENT, DEBUG_VELOCITY, } from "./config.js";
-import { Sand, Water, Fire, Smoke, Wood, Stone, Custom, Empty, Acid, Foam, Oil, } from "./elements/ElementIndex.js";
+import { Sand, Water, Fire, Smoke, Wood, Stone, Custom, Empty, Acid, Foam, Oil, Ice, Bomb, Meteor, } from "./elements/ElementIndex.js";
 class Grid {
     initialize(row, col) {
         this.row = row;
@@ -81,6 +81,15 @@ class Grid {
                 break;
             case "Oil":
                 newElement = new Oil(y * this.col + x);
+                break;
+            case "Ice":
+                newElement = new Ice(y * this.col + x);
+                break;
+            case "Bomb":
+                newElement = new Bomb(y * this.col + x);
+                break;
+            case "Meteor":
+                newElement = new Meteor(y * this.col + x);
                 break;
             case "Custom":
                 newElement = new Custom(y * this.col + x);

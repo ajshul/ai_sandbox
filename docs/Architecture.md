@@ -22,11 +22,11 @@ This project extends the original Tileo sandbox (grid-based falling sand) with a
   - `src/client/ui/PreviewState.ts`: Central store for the current preview.
   - `src/client/ui/PreviewOverlay.ts`: Ghost-draws the stencil preview on the canvas each frame.
 
-- Server (stubs for GPT-5 integration)
+- Server (GPT-5 integration)
 
-  - `src/server/tools/compileTil.ts`: Placeholder that currently calls the local validator; later replaced with a GPT-5 tool call to produce CFG-constrained TIL.
-  - `src/server/openaiClient.ts`: Placeholder export to align with guide examples.
-  - `src/server/routes/content.ts`: Minimal shape-compatible helpers for compile/register endpoints.
+  - `src/server/tools/compileTil.ts`: Calls OpenAI Responses API with a custom tool `compile_til` and a Lark CFG matching our DSL; falls back to local validate.
+  - `src/server/openaiClient.ts`: Creates OpenAI client from `OPENAI_API_KEY`.
+  - `src/server/index.ts`: Express server exposing `POST /compile`.
 
 - Tileo core (existing)
   - `src/modules/renderer.ts`: Frame loop, metrics, overlay hooks.
@@ -53,11 +53,14 @@ This project extends the original Tileo sandbox (grid-based falling sand) with a
 
 #### New materials and behaviours
 
-- Materials: ACID (corrosive), OIL (flammable, viscous), FOAM (extinguishing, viscous). Tags enable behaviour targeting.
+- Materials: ACID (corrosive), OIL (flammable, viscous, consumed while burning), FOAM (extinguishing, viscous), ICE (freezes water, melts near fire), BOMB (gravity fall + fuse), METEOR (biased diagonal fall + smoke trail).
 - Behaviours:
-  - `Ignition`: sets `onFire` when near fire/burning elements (used by OIL).
-  - `Extinguish`: clears fire cells and resets `onFire` in a small radius (used by FOAM).
-  - `Corrode`: removes/marks adjacent brittle solids (used by ACID) without uncontrolled multiplication.
+- `Ignition`: sets `onFire` when near fire/burning elements (used by OIL).
+- `Extinguish`: clears fire cells and resets `onFire` in a small radius (used by FOAM).
+- `Corrode`: removes/marks adjacent brittle solids (used by ACID) without uncontrolled multiplication.
+- `Fuse`: countdown for bombs; triggers explosion.
+- `GravityFall`: straight down fall (bombs), distinct from granular and meteor movement.
+- `MeteorMove`: biased diagonal fall, smoke trail, small explosion on impact.
 
 #### Extending
 

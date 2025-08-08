@@ -11,5 +11,5 @@
     "types": []
   },
   "include": ["src/**/*"],
-  "exclude": ["src/server/**"]
+  "exclude": []
 }

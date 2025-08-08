@@ -13,6 +13,12 @@ class Burning extends Life {
         const x = element.index % grid.row;
         const y = Math.floor(element.index / grid.col);
         element.onFire = false;
+        // Special-case: if the element is a Bomb, detonate
+        if (element.constructor.name === "Bomb") {
+            // lazy import avoided; Bomb has explode(grid)
+            element.explode(grid);
+            return;
+        }
         super.onDeath(element, grid);
         if (Math.random() > 0.6) {
             let replacement = new Smoke(element.index);
@@ -33,7 +39,9 @@ class Burning extends Life {
                 if (grid.isValidIndex(neighbourX, neighbourY)) {
                     const neighbourIndex = neighbourY * grid.col + neighbourX;
                     const neighbour = grid.get(neighbourIndex);
-                    if (neighbour && neighbour.getBehaviour(Burning) && !neighbour.onFire) {
+                    if (neighbour &&
+                        neighbour.getBehaviour(Burning) &&
+                        !neighbour.onFire) {
                         neighbours.push(neighbourIndex);
                     }
                 }

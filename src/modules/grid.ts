@@ -27,6 +27,9 @@ import {
   Acid,
   Foam,
   Oil,
+  Ice,
+  Bomb,
+  Meteor,
 } from "./elements/ElementIndex.js";
 
 class Grid {
@@ -124,6 +127,15 @@ class Grid {
         break;
       case "Oil":
         newElement = new Oil(y * this.col + x);
+        break;
+      case "Ice":
+        newElement = new Ice(y * this.col + x);
+        break;
+      case "Bomb":
+        newElement = new Bomb(y * this.col + x);
+        break;
+      case "Meteor":
+        newElement = new Meteor(y * this.col + x);
         break;
       case "Custom":
         newElement = new Custom(y * this.col + x);

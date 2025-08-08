@@ -9,3 +9,6 @@ export { default as Empty } from "./misc/empty.js";
 export { default as Acid } from "./liquids/acid.js";
 export { default as Foam } from "./misc/foam.js";
 export { default as Oil } from "./misc/oil.js";
+export { default as Ice } from "./solids/ice.js";
+export { default as Bomb } from "./misc/bomb.js";
+export { default as Meteor } from "./misc/meteor.js";

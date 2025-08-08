@@ -1,5 +1,4 @@
 // Lightweight DOM prompt bar injected into existing index.html
-import { compileFromText } from "../../server/tools/compileTil.js";
 import {
   PreviewState,
   setPreviewState,
@@ -40,14 +39,28 @@ export function mountPromptBar(container: HTMLElement) {
     status.textContent = "Compiling...";
     const text = input.value.trim();
     if (!text) return;
-    const res = await compileFromText(text);
-    if (!res.ok || !res.program) {
-      status.textContent = `Error: ${(res.errors || []).join(", ")}`;
+    let res: any = null;
+    try {
+      const r = await fetch("http://127.0.0.1:8787/compile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+      res = await r.json();
+    } catch (e) {
+      status.textContent = `Server unavailable`;
+      return;
+    }
+    const ok = (res as any).ok;
+    const program = (res as any).program;
+    const errors = (res as any).errors as string[] | undefined;
+    if (!ok || !program) {
+      status.textContent = `Error: ${(errors || []).join(", ")}`;
       setPreviewState(null);
       return;
     }
     // Take first prefab for preview
-    const prefab = res.program.prefabs[0];
+    const prefab = program.prefabs[0];
     const preview: PreviewState = { prefab, visible: true };
     setPreviewState(preview);
     status.textContent = `OK: ${prefab.name}`;

@@ -23,6 +23,18 @@ export function validateTIL(til: string): ValidationResult {
     const program = parseProgram(til);
     const errors: string[] = [];
     for (const pf of program.prefabs) {
+      if (pf.tags) {
+        // Basic tag sanity: ensure tags are strings and length is reasonable
+        if (
+          !Array.isArray(pf.tags) ||
+          pf.tags.some((t) => typeof t !== "string")
+        ) {
+          errors.push("Invalid tags list");
+        }
+        if ((pf.tags || []).length > 16) {
+          errors.push("Too many tags on prefab (max 16)");
+        }
+      }
       let area = 0;
       for (const s of pf.footprint) {
         if (s.type === "rect") {
@@ -39,6 +51,15 @@ export function validateTIL(til: string): ValidationResult {
           if (!MATERIALS[s.mat as keyof typeof MATERIALS])
             errors.push(`Unknown material ${s.mat}`);
         }
+      }
+      // verbs budget: only count setRect for now
+      const verbs = (pf as any).verbs as any[] | undefined;
+      if (verbs) {
+        let actions = 0;
+        for (const v of verbs) {
+          actions += (v.actions || []).length;
+        }
+        if (actions > 32) errors.push("Too many verb actions (max 32)");
       }
       if (area > LIMITS.footprintArea)
         errors.push(

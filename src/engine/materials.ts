@@ -16,6 +16,9 @@ import {
   Foam,
   Oil,
 } from "../modules/elements/ElementIndex.js";
+import Ice from "../modules/elements/solids/ice.js";
+import Bomb from "../modules/elements/misc/bomb.js";
+import Meteor from "../modules/elements/misc/meteor.js";
 
 export type MaterialId =
   | "AIR"
@@ -28,7 +31,13 @@ export type MaterialId =
   | "FIRE"
   | "ACID"
   | "FOAM"
-  | "OIL";
+  | "OIL"
+  | "ICE"
+  | "BOMB"
+  | "METEOR"
+  | "RUBBER"
+  | "BRICK"
+  | "RUBBLE";
 
 export interface Material {
   id: MaterialId;
@@ -64,6 +73,12 @@ export const MATERIALS: Record<MaterialId, Material> = {
   ACID: { id: "ACID", tags: ["liquid", "corrosive"] },
   FOAM: { id: "FOAM", tags: ["liquid", "extinguishing", "viscous"] },
   OIL: { id: "OIL", tags: ["liquid", "flammable", "viscous"] },
+  ICE: { id: "ICE", tags: ["solid", "brittle", "inert"] },
+  BOMB: { id: "BOMB", tags: ["solid", "flammable"] },
+  METEOR: { id: "METEOR", tags: ["solid", "fire"] },
+  RUBBER: { id: "RUBBER", tags: ["solid", "inert", "ductile"] },
+  BRICK: { id: "BRICK", tags: ["solid", "brittle"] },
+  RUBBLE: { id: "RUBBLE", tags: ["solid", "granular", "brittle"] },
 };
 
 export type ElementCtor = new (index: number) => any;
@@ -92,6 +107,18 @@ export function materialToElementCtor(material: MaterialId): ElementCtor {
       return Foam as unknown as ElementCtor;
     case "OIL":
       return Oil as unknown as ElementCtor;
+    case "ICE":
+      return Ice as unknown as ElementCtor;
+    case "BOMB":
+      return Bomb as unknown as ElementCtor;
+    case "METEOR":
+      return Meteor as unknown as ElementCtor;
+    case "RUBBER":
+      return Stone as unknown as ElementCtor;
+    case "BRICK":
+      return Stone as unknown as ElementCtor;
+    case "RUBBLE":
+      return Sand as unknown as ElementCtor;
     default:
       return Empty as unknown as ElementCtor;
   }

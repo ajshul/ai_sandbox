@@ -10,6 +10,9 @@ import {
   Acid,
   Foam,
   Oil,
+  Ice,
+  Bomb,
+  Meteor,
 } from "./elements/ElementIndex.js";
 import { gridWidth, col, row, grid } from "./renderer.js";
 import { updateHTMLValues } from "./editor.js";
@@ -42,11 +45,29 @@ export function setupControls() {
     mouseX = (e.clientX - rect.left) * (800 / canvas.clientWidth);
     mouseY = (e.clientY - rect.top) * (800 / canvas.clientWidth);
 
+    const id = currentElement.constructor.name.toLowerCase();
+    let i = Math.floor(mouseX / gridWidth);
+    let j = Math.floor(mouseY / gridWidth);
+    if (i >= 0 && i < col && j >= 0 && j < row) {
+      if (id === "bomb") {
+        const inst = new Bomb(j * col + i);
+        grid.setIndex(j * col + i, inst);
+        grid.setElement(i, j, inst);
+        return;
+      }
+      if (id === "meteor") {
+        const inst = new Meteor(j * col + i);
+        grid.setIndex(j * col + i, inst);
+        grid.setElement(i, j, inst);
+        return;
+      }
+    }
+
     brushInterval = window.setInterval(() => {
-      let i = Math.floor(mouseX / gridWidth);
-      let j = Math.floor(mouseY / gridWidth);
-      if (i >= 0 && i < col && j >= 0 && j < row) {
-        grid.setBrush(i, j);
+      let i2 = Math.floor(mouseX / gridWidth);
+      let j2 = Math.floor(mouseY / gridWidth);
+      if (i2 >= 0 && i2 < col && j2 >= 0 && j2 < row) {
+        grid.setBrush(i2, j2);
       }
     }, brushSpeed);
   });
@@ -88,6 +109,12 @@ export function setupControls() {
     acid: () => new Acid(0),
     foam: () => new Foam(0),
     oil: () => new Oil(0),
+    ice: () => new Ice(0),
+    bomb: () => new Bomb(0),
+    meteor: () => new Meteor(0),
+    rubber: () => new Stone(0),
+    brick: () => new Stone(0),
+    rubble: () => new Sand(0),
   };
 
   Object.keys(controls).forEach((controlId) => {

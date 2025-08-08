@@ -1,7 +1,7 @@
 import Liquid from "../liquids/liquid.js";
 import WaterMove from "../../behaviours/WaterMove.js";
 import Ignition from "../../behaviours/Ignition.js";
-import Life from "../../behaviours/Life.js";
+import BurningLife from "../../behaviours/BurningLife.js";
 
 class Oil extends Liquid {
   static defaultColor = [59, 47, 47];
@@ -25,8 +25,7 @@ class Oil extends Liquid {
           dispersion: Oil.currentDispersion,
         }),
         new Ignition(),
-        // Oil burns away when ignited
-        new Life({ life: 120, reduction: 2 }),
+        new BurningLife({ life: 140, reduction: 2 }),
       ],
     });
     this.probability = Oil.currentProbability;

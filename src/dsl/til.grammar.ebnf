@@ -4,11 +4,12 @@ PROGRAM      := (DECLARATION ";")+
 DECLARATION  := PREFAB
 
 PREFAB       := "prefab" ID "{" P_BODY "}"
-P_BODY       := (PROP | FOOTPRINT )*
+P_BODY       := (PROP | TAGS | FOOTPRINT | VERB )*
 
 PROP         := "prop" ID ":" VALUE
 VALUE        := NUMBER | STRING | LIST
 LIST         := "[" (STRING ("," STRING)*)? "]"
+TAGS         := "tags" ":" LIST
 
 FOOTPRINT    := "footprint" "{" STENCILS "}"
 STENCILS     := STENCIL+
@@ -17,6 +18,10 @@ STENCIL      := RECT | CIRCLE | LINE
 RECT         := "rect" "(" x "," y "," w "," h "," MAT ("," COLOR)? ")"
 CIRCLE       := "circle" "(" x "," y "," r "," MAT ("," COLOR)? ")"
 LINE         := "line" "(" x "," y "," x "," y "," MAT ("," COLOR)? ")"
+
+VERB         := "verb" ID "{" ACTIONS "}"
+ACTIONS      := (SETRECT ";")+
+SETRECT      := "setRect" "(" x "," y "," w "," h "," MAT ("," COLOR)? ")"
 
 ID           := /[A-Za-z_][A-Za-z0-9_]*/
 NUMBER       := /-?[0-9]+/

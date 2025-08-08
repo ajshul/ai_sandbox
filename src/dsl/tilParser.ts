@@ -34,7 +34,20 @@ export type TilLine = {
 export type TilPrefab = {
   name: string;
   props: Record<string, number | string | string[]>;
+  tags?: string[];
   footprint: Array<TilRect | TilCircle | TilLine>;
+  verbs?: Array<{
+    name: string;
+    actions: Array<{
+      type: "setRect";
+      x: number;
+      y: number;
+      w: number;
+      h: number;
+      mat: string;
+      color?: string;
+    }>;
+  }>;
 };
 
 export type TilProgram = { prefabs: TilPrefab[] };
@@ -102,6 +115,15 @@ function parseListOfStrings(input: string, i: number): [string[], number] {
   i = eatWS(input, i);
   i = expect("]", input, i);
   return [arr, i];
+}
+
+function parseTags(input: string, i: number): [string[], number] {
+  i = expect("tags", input, i);
+  i = eatWS(input, i);
+  i = expect(":", input, i);
+  i = eatWS(input, i);
+  const [arr, j] = parseListOfStrings(input, i);
+  return [arr, eatWS(input, j)];
 }
 
 function parseRect(input: string, i: number): [TilRect, number] {
@@ -189,6 +211,50 @@ function parseStencil(input: string, i: number) {
   if (input.slice(i, i + 4) === "line") return parseLine(input, i);
   throw new Error(`Expected stencil at ${i}`);
 }
+function parseSetRect(input: string, i: number) {
+  i = expect("setRect", input, i);
+  i = eatWS(input, i);
+  i = expect("(", input, i);
+  i = eatWS(input, i);
+  const [x, i1] = parseNumber(input, i);
+  i = eatWS(input, expect(",", input, i1));
+  const [y, i2] = parseNumber(input, i);
+  i = eatWS(input, expect(",", input, i2));
+  const [w, i3] = parseNumber(input, i);
+  i = eatWS(input, expect(",", input, i3));
+  const [h, i4] = parseNumber(input, i);
+  i = eatWS(input, expect(",", input, i4));
+  const [mat, i5] = parseId(input, i);
+  i = eatWS(input, i5);
+  let color: string | undefined;
+  if (input[i] === ",") {
+    i = eatWS(input, i + 1);
+    const m = match(COLOR, input, i);
+    if (!m) throw new Error(`Expected color at ${i}`);
+    color = m[0] as TilColor;
+    i = eatWS(input, m[1]);
+  }
+  i = expect(")", input, i);
+  return [{ type: "setRect", x, y, w, h, mat, color }, i] as const;
+}
+
+function parseVerb(input: string, i: number) {
+  i = expect("verb", input, i);
+  i = eatWS(input, i);
+  const [name, i1] = parseId(input, i);
+  i = eatWS(input, i1);
+  i = expect("{", input, i);
+  i = eatWS(input, i);
+  const actions: any[] = [];
+  while (input[i] !== "}") {
+    const [act, j] = parseSetRect(input, i);
+    actions.push(act);
+    i = eatWS(input, j);
+    if (input[i] === ";") i = eatWS(input, i + 1);
+  }
+  i = expect("}", input, i);
+  return [{ name, actions }, i] as const;
+}
 
 function parseFootprint(
   input: string,
@@ -238,11 +304,21 @@ function parsePrefab(input: string, i: number): [TilPrefab, number] {
   i = expect("{", input, i);
   i = eatWS(input, i);
   const props: Record<string, any> = {};
+  let tags: string[] | undefined = undefined;
   let footprint: Array<TilRect | TilCircle | TilLine> = [];
+  const verbs: any[] = [];
   while (input[i] !== "}") {
     if (input.slice(i, i + 9) === "footprint") {
       const [fp, j] = parseFootprint(input, i);
       footprint = fp;
+      i = eatWS(input, j);
+    } else if (input.slice(i, i + 4) === "tags") {
+      const [tg, j] = parseTags(input, i);
+      tags = tg;
+      i = eatWS(input, j);
+    } else if (input.slice(i, i + 4) === "verb") {
+      const [vb, j] = parseVerb(input, i);
+      verbs.push(vb);
       i = eatWS(input, j);
     } else if (input.slice(i, i + 4) === "prop") {
       const [k, v, j] = parseProp(input, i);
@@ -253,7 +329,7 @@ function parsePrefab(input: string, i: number): [TilPrefab, number] {
     }
   }
   i = expect("}", input, i);
-  return [{ name, props, footprint }, i];
+  return [{ name, props, tags, footprint, verbs }, i];
 }
 
 export function parseProgram(input: string): TilProgram {

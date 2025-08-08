@@ -77,6 +77,16 @@ python3 -m http.server 5173
 - TIL parser & validator live under `src/dsl/`.
 - Grid patches are produced and applied via `src/engine/` helpers.
 
+### New materials and behaviors
+
+- New elements: Acid (corrodes), Oil (ignites and is consumed only while burning), Foam (extinguishes), Ice (melts near fire and slowly freezes nearby water), Bomb (falls straight down then explodes), Meteor (falls diagonally with smoke trail and ignites on impact).
+- Solid/liquid/gas falling is consistent with distinct movement behaviours: Sand (granular fall), Bomb (gravity fall, no trail), Meteor (biased diagonal fall with trail), Water/Smoke (disperse).
+
+### GPT-5 integration
+
+- A tiny server exposes `POST /compile` (see `src/server/index.ts`) that calls a GPT-5 custom tool `compile_til` with a CFG-constrained grammar. If no API key is set, it falls back to local validation expecting raw TIL.
+- The PromptBar uses this server endpoint when compiling natural language.
+
 ## Documentation
 
 - `docs/Architecture.md`: high-level system overview.

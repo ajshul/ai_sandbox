@@ -3,8 +3,8 @@ dist/
 .DS_Store
 *.log
 
-# Ignore AI docs and Cursor guide (renamed guide.md)
+# Ignore AI docs and guide
 ai_docs/
 guide.md
-Cursor_Guide.md
 
+.env
